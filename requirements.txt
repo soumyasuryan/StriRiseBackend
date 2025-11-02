@@ -7,3 +7,6 @@ scikit-learn
 joblib
 python-dotenv
 beautifulsoup4
+gunicorn
+requests
+duckduckgo-search
