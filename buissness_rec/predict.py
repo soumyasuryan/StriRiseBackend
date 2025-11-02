@@ -1,30 +1,29 @@
 import pandas as pd
-import joblib
+import os
 
-# Load model and encoder
-model = joblib.load("business_recommendation_model.joblib")
-label_encoder = joblib.load("business_label_encoder.joblib")
+# Build full path dynamically
+base_dir = os.path.dirname(__file__)  # folder where predict.py is located
+csv_path = os.path.join(base_dir, "expanded_business_recommendation_dataset.csv")
 
-# Create a single test input
-user_input = pd.DataFrame([{
-    "Age": 32,
-    "Gender": "Female",
-    "Location_Type": "Rural",
-    "Budget_Range": "Low",
-    "Practical_Skills": "Handicraft",
-    "Interest_Area": "Education",
-    "Work_Mode": "Home-based",
-    "Risk_Tolerance": "Low",
-    "Available_Time_Per_Day": 6,
-    "Literacy_Level": "Moderate",
-    "Assets_Owned": "Phone",
-    "Community_Support_Level": "High",
-    "Is_Digital_Asset": 1,
-    "Feasibility_Score": 0.7
-}])
+print("📂 Looking for CSV at:", csv_path)
 
-# Predict
-prediction = model.predict(user_input)
-business = label_encoder.inverse_transform(prediction)
+df = pd.read_csv(csv_path)
+print("✅ Dataset loaded successfully!")
+print(df.head())
+print("Shape:", df.shape)
+print("Columns:", df.columns.tolist())
 
-print(f"🎯 Recommended Business Category: {business[0]}")
+# Check for unique values in Practical_Skills
+print("\n🔍 Unique values in 'Practical_Skills':")
+print(df["Practical_Skills"].value_counts(dropna=False))
+
+# Or just the unique list (if you don’t want counts)
+# print(df["Practical_Skills"].unique())
+
+# Check for unique values in Interest_Area
+print("\n🔍 Unique values in 'Interest_Area':")
+print(df["Interest_Area"].value_counts(dropna=False))
+
+# Optional: number of unique entries
+print("\nTotal unique Practical_Skills:", df["Practical_Skills"].nunique())
+print("Total unique Interest_Area:", df["Interest_Area"].nunique())

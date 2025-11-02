@@ -137,7 +137,7 @@ def get_skill_info():
             if data:
                 return jsonify({"skill": name, "source": "predefined", "result": data})
 
-    # Step 2: Search online fallback
+    # Step 2: Search online fallback 
     online_data = search_skill_online(skill)
     if online_data:
         return jsonify({"skill": skill, "source": "web_search", "result": online_data})
@@ -169,9 +169,91 @@ def home():
         "usage_example": "/api/get-skill?skill=Home Cleaning Service"
     })
 
+import joblib
+import os
+
+
 
 # --------------------------------------------------------
-# 7️⃣ Run
+# 1️⃣ Load Model and Label Encoder
+# --------------------------------------------------------
+BASE_DIR = os.path.dirname(__file__)
+
+MODEL_PATH = os.path.join(BASE_DIR, "business_recommendation_model.joblib")
+ENCODER_PATH = os.path.join(BASE_DIR, "business_label_encoder.joblib")
+
+model = joblib.load(MODEL_PATH)
+label_encoder = joblib.load(ENCODER_PATH)
+
+print("✅ Model and Label Encoder loaded successfully!")
+
+# --------------------------------------------------------
+# 2️⃣ Health Check Route
+# --------------------------------------------------------
+@app.route("/business_rec", methods=["POST"])
+def business_rec():
+    return jsonify({"message": "✅ Business Recommendation API is running!"})
+
+import pandas as pd
+# --------------------------------------------------------
+# 3️⃣ Prediction Route
+# --------------------------------------------------------
+@app.route("/predict", methods=["POST"])
+def predict():
+    try:
+        data = request.get_json()
+
+        # Convert JSON input to DataFrame
+        df = pd.DataFrame([data])
+
+        # Extract expected columns from model preprocessor
+        preprocessor = model.named_steps["preprocessor"]
+        categorical_features = preprocessor.transformers_[0][2]
+        numeric_features = preprocessor.transformers_[1][2]
+        expected_cols = categorical_features + numeric_features
+
+        # Handle missing columns gracefully
+        for col in expected_cols:
+            if col not in df.columns:
+                # Assign default values
+                if col in categorical_features:
+                    df[col] = "Unknown"
+                else:
+                    df[col] = 0
+
+        # Make prediction
+        prediction = model.predict(df)
+        result = label_encoder.inverse_transform(prediction)[0]
+
+        return jsonify({
+            "success": True,
+            "predicted_business": result
+        })
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        })
+import json
+@app.route('/items', methods=['GET'])
+def get_items():
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    purchasable_path = os.path.join(base_path, 'purchasable.json')
+    rentable_path = os.path.join(base_path, 'rentable.json')
+
+    with open(purchasable_path, 'r') as f:
+        purchasable_items = json.load(f)
+
+    with open(rentable_path, 'r') as f:
+        rentable_items = json.load(f)
+
+    return jsonify({
+        'purchasable_items': purchasable_items,
+        'rentable_items': rentable_items
+    })
+# --------------------------------------------------------
+# 4️⃣ Run the App
 # --------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True)

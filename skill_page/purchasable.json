@@ -1,0 +1,86 @@
+[
+    {
+        "product_name": "Handmade Jewelry",
+        "image_url": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=800&q=60",
+        "price": 799,
+        "description": "Unique handmade jewelry crafted by women artisans."
+    },
+    {
+        "product_name": "Female Entrepreneur Planner",
+        "image_url": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=800&q=60",
+        "price": 350,
+        "description": "A planner designed to organize business ideas and goals for women."
+    },
+    {
+        "product_name": "Women-led Skincare Set",
+        "image_url": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=60",
+        "price": 999,
+        "description": "All-natural skincare products made by women entrepreneurs."
+    },
+    {
+        "product_name": "Motivational Wall Art",
+        "image_url": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=60",
+        "price": 499,
+        "description": "Wall art featuring quotes by successful women."
+    },
+    {
+        "product_name": "Business Card Holder",
+        "image_url": "data:image/jpeg;base64,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",
+        "price": 249,
+        "description": "Stylish holder to keep business cards organized."
+    },
+    {
+        "product_name": "Women’s Networking Event Tickets",
+        "image_url": "https://images.unsplash.com/photo-1526045612212-70caf35c14df?auto=format&fit=crop&w=800&q=60",
+        "price": 799,
+        "description": "Tickets to attend women entrepreneurship networking events."
+    },
+    {
+        "product_name": "Custom Laptop Sleeve",
+        "image_url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=60",
+        "price": 649,
+        "description": "Laptop sleeve designed to celebrate women in tech."
+    },
+    {
+        "product_name": "Empowerment Journal",
+        "image_url": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=60",
+        "price": 399,
+        "description": "Journal for daily motivation and empowerment reflections."
+    },
+    {
+        "product_name": "Women-run Coffee Brand",
+        "image_url": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=60",
+        "price": 349,
+        "description": "Coffee sourced and packaged by women entrepreneurs."
+    },
+    {
+        "product_name": "Women Power Badge Pins",
+        "image_url": "https://images.unsplash.com/photo-1549576490-b0b4831ef60a?auto=format&fit=crop&w=800&q=60",
+        "price": 159,
+        "description": "Pins supporting women empowerment movements."
+    },
+    {
+        "product_name": "Inspirational Quote Calendars",
+        "image_url": "https://images.unsplash.com/photo-1497493292307-31c376b6e479?auto=format&fit=crop&w=800&q=60",
+        "price": 249,
+        "description": "Calendars featuring daily quotes by women leaders."
+    },
+    {
+        "product_name": "Handmade Soap Collections",
+        "image_url": "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=60",
+        "price": 329,
+        "description": "Natural soaps made by women artisans."
+    },
+    {
+        "product_name": "Women in Tech Laptop Stickers",
+        "image_url": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=60",
+        "price": 129,
+        "description": "Stickers to personalize laptops with women empowerment themes."
+    },
+    {
+        "product_name": "Business Motivational Pens",
+        "image_url": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=60",
+        "price": 199,
+        "description": "Pens with motivational quotes for entrepreneurs."
+    }
+]

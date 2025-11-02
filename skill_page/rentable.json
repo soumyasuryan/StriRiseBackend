@@ -1,0 +1,96 @@
+[
+  
+  {
+    "product_name": "Event Venue for Women-led Workshops",
+    "image_url": "https://images.unsplash.com/photo-1503424886307-b090341d25d1",
+    "rent": 500,
+    "description": "Venue rental for hosting women entrepreneurship events."
+  },
+  {
+    "product_name": "Photography Services",
+    "image_url": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f",
+    "rent": 200,
+    "description": "Professional photoshoot services for women entrepreneurs."
+  },
+  {
+    "product_name": "Business Consulting Hours",
+    "image_url": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
+    "rent": 150,
+    "description": "Hourly consulting sessions for female business owners."
+  },
+  {
+    "product_name": "Marketing Campaign Tools",
+    "image_url": "https://images.unsplash.com/photo-1557838923-2985c318be48",
+    "rent": 100,
+    "description": "Rent digital marketing tools to boost women-led businesses."
+  },
+  {
+    "product_name": "Mobile Pop-up Shop",
+    "image_url": "https://images.unsplash.com/photo-1607082349566-187342175e2f",
+    "rent": 400,
+    "description": "Rent a mobile booth to showcase women entrepreneurs' products."
+  },
+  {
+    "product_name": "Event Equipment Rental",
+    "image_url": "https://images.unsplash.com/photo-1511578314322-379afb476865",
+    "rent": 250,
+    "description": "Audio and visual equipment for women-led events."
+  },
+  {
+    "product_name": "Digital Workspace Software",
+    "image_url": "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
+    "rent": 120,
+    "description": "Subscription-based digital software for women businesses."
+  },
+  
+  {
+    "product_name": "Workshop Trainer Services",
+    "image_url": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f",
+    "rent": 350,
+    "description": "Hire expert trainers for skill development workshops."
+  },
+ 
+  {
+    "product_name": "Branding Package Rental",
+    "image_url": "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+    "rent": 300,
+    "description": "Temporary access to branding and design services."
+  },
+  {
+    "product_name": "Mentorship Program Slots",
+    "image_url": "https://images.unsplash.com/photo-1521790797524-b2497295b8a0",
+    "rent": 200,
+    "description": "Limited slots for mentorship from successful women leaders."
+  },
+  
+  {
+    "product_name": "Trade Show Booth",
+    "image_url": "https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa",
+    "rent": 480,
+    "description": "Booth rental at trade shows promoting women entrepreneurs."
+  },
+  {
+    "product_name": "Social Media Management Tools",
+    "image_url": "https://images.unsplash.com/photo-1557804506-669a67965ba0",
+    "rent": 160,
+    "description": "Temporary usage of social media management software."
+  },
+  {
+    "product_name": "Workshop Space Rental",
+    "image_url": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d",
+    "rent": 280,
+    "description": "Rent space to conduct women empowerment workshops."
+  },
+  {
+    "product_name": "Product Display Racks",
+    "image_url": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc",
+    "rent": 90,
+    "description": "Rent racks for showcasing products at events."
+  },
+  {
+    "product_name": "Brand Photographer",
+    "image_url": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f",
+    "rent": 220,
+    "description": "Hire photographers specialized in branding women-led businesses."
+  }
+]
