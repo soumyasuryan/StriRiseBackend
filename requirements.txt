@@ -10,3 +10,4 @@ beautifulsoup4
 gunicorn
 requests
 duckduckgo-search
+xgboost
