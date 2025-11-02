@@ -6,4 +6,4 @@ numpy
 scikit-learn
 joblib
 python-dotenv
-gunicorn
+beautifulsoup4
