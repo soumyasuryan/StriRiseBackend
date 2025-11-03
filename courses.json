@@ -1,54 +1,54 @@
 {
   "courses": [
     {
-      "name": "Introduction to Machine Learning",
-      "price_in_rupees": 4999,
-      "description": "A beginner-friendly course covering the foundations of supervised and unsupervised machine learning using Python."
-    },
-    {
-      "name": "Full-Stack Web Development with React & Node.js",
-      "price_in_rupees": 7499,
-      "description": "Comprehensive training on modern web development techniques, including frontend and backend integration."
-    },
-    {
-      "name": "Data Science with Python",
-      "price_in_rupees": 5999,
-      "description": "Learn data analysis, visualization, and predictive modeling using NumPy, Pandas, and scikit-learn."
-    },
-    {
-      "name": "Artificial Intelligence Fundamentals",
-      "price_in_rupees": 6999,
-      "description": "A conceptual introduction to AI principles, neural networks, and real-world applications."
-    },
-    {
-      "name": "C Programming Essentials",
-      "price_in_rupees": 2999,
-      "description": "Master the C language from scratch, including syntax, pointers, structures, and file handling."
-    },
-    {
-      "name": "UI/UX Design for Beginners",
-      "price_in_rupees": 4499,
-      "description": "Explore user experience design principles, wireframing, and prototyping using industry tools."
-    },
-    {
-      "name": "Deep Learning with TensorFlow",
-      "price_in_rupees": 8499,
-      "description": "Hands-on training on deep neural networks, CNNs, and ANN architectures using TensorFlow."
-    },
-    {
-      "name": "Cybersecurity Basics",
+      "name": "Entrepreneurship for Women: From Idea to Launch",
       "price_in_rupees": 3999,
-      "description": "Understand cyber threats, ethical hacking fundamentals, and techniques for securing information systems."
+      "description": "Learn how to develop business ideas, conduct market research, and launch your own small-scale enterprise."
     },
     {
-      "name": "Cloud Computing with AWS",
-      "price_in_rupees": 6599,
-      "description": "Learn to deploy, manage, and scale cloud-based applications using key AWS services."
+      "name": "Handmade Business Mastery",
+      "price_in_rupees": 3499,
+      "description": "A step-by-step guide to turning your handmade crafts, jewelry, or art into a profitable small business."
     },
     {
-      "name": "Digital Marketing Strategy",
+      "name": "Financial Literacy for Women Entrepreneurs",
+      "price_in_rupees": 2999,
+      "description": "Understand budgeting, investment basics, profit tracking, and funding options for women-led businesses."
+    },
+    {
+      "name": "Social Media Marketing for Small Businesses",
+      "price_in_rupees": 4499,
+      "description": "Master Instagram, Facebook, and Pinterest marketing to grow your brand and attract loyal customers online."
+    },
+    {
+      "name": "E-Commerce Startup Guide for Women",
       "price_in_rupees": 4999,
-      "description": "Develop skills in SEO, content marketing, and social media campaigns using advanced analytics."
+      "description": "Learn to set up online stores, manage sales, and deliver customer value through popular e-commerce platforms."
+    },
+    {
+      "name": "Women in Leadership and Business Strategy",
+      "price_in_rupees": 5999,
+      "description": "Develop leadership, negotiation, and decision-making skills to effectively manage teams and scale your venture."
+    },
+    {
+      "name": "Digital Branding for Female Entrepreneurs",
+      "price_in_rupees": 3799,
+      "description": "Understand brand identity, storytelling, and digital presence to build credibility and attract clients."
+    },
+    {
+      "name": "Home-Based Business Setup and Growth",
+      "price_in_rupees": 2899,
+      "description": "Learn practical steps to start and manage small businesses from home with minimal resources."
+    },
+    {
+      "name": "Product Photography and Online Presentation",
+      "price_in_rupees": 3199,
+      "description": "Gain skills in photographing and presenting your products for online sales using smartphones and affordable tools."
+    },
+    {
+      "name": "Women-Centric Startup Funding and Grants",
+      "price_in_rupees": 4499,
+      "description": "Discover funding opportunities, government schemes, and pitch strategies for women-led startups."
     }
   ]
 }
