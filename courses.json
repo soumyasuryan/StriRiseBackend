@@ -1,0 +1,54 @@
+{
+  "courses": [
+    {
+      "name": "Introduction to Machine Learning",
+      "price_in_rupees": 4999,
+      "description": "A beginner-friendly course covering the foundations of supervised and unsupervised machine learning using Python."
+    },
+    {
+      "name": "Full-Stack Web Development with React & Node.js",
+      "price_in_rupees": 7499,
+      "description": "Comprehensive training on modern web development techniques, including frontend and backend integration."
+    },
+    {
+      "name": "Data Science with Python",
+      "price_in_rupees": 5999,
+      "description": "Learn data analysis, visualization, and predictive modeling using NumPy, Pandas, and scikit-learn."
+    },
+    {
+      "name": "Artificial Intelligence Fundamentals",
+      "price_in_rupees": 6999,
+      "description": "A conceptual introduction to AI principles, neural networks, and real-world applications."
+    },
+    {
+      "name": "C Programming Essentials",
+      "price_in_rupees": 2999,
+      "description": "Master the C language from scratch, including syntax, pointers, structures, and file handling."
+    },
+    {
+      "name": "UI/UX Design for Beginners",
+      "price_in_rupees": 4499,
+      "description": "Explore user experience design principles, wireframing, and prototyping using industry tools."
+    },
+    {
+      "name": "Deep Learning with TensorFlow",
+      "price_in_rupees": 8499,
+      "description": "Hands-on training on deep neural networks, CNNs, and ANN architectures using TensorFlow."
+    },
+    {
+      "name": "Cybersecurity Basics",
+      "price_in_rupees": 3999,
+      "description": "Understand cyber threats, ethical hacking fundamentals, and techniques for securing information systems."
+    },
+    {
+      "name": "Cloud Computing with AWS",
+      "price_in_rupees": 6599,
+      "description": "Learn to deploy, manage, and scale cloud-based applications using key AWS services."
+    },
+    {
+      "name": "Digital Marketing Strategy",
+      "price_in_rupees": 4999,
+      "description": "Develop skills in SEO, content marketing, and social media campaigns using advanced analytics."
+    }
+  ]
+}

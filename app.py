@@ -252,6 +252,18 @@ def get_items():
         'purchasable_items': purchasable_items,
         'rentable_items': rentable_items
     })
+@app.route('/api/courses', methods=['GET'])
+def get_courses():
+    # Get the path to the JSON file in the same directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    json_path = os.path.join(current_dir, 'courses.json')
+    
+    # Read JSON data from the file
+    with open(json_path, 'r', encoding='utf-8') as f:
+        courses_data = json.load(f)
+    
+    # Return JSON response
+    return jsonify(courses_data)
 # --------------------------------------------------------
 # 4️⃣ Run the App
 # --------------------------------------------------------
