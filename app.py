@@ -5,9 +5,58 @@ from bs4 import BeautifulSoup
 from duckduckgo_search import DDGS
 import re
 from urllib.parse import urljoin
+from flask_bcrypt import Bcrypt
+import jwt
+import datetime
 
 app = Flask(__name__)
 CORS(app)
+bcrypt = Bcrypt(app)
+
+app.config['SECRET_KEY'] = 'supersecretkey123'  # change this in production
+
+# In-memory user store (for demo)
+USERS = {}
+
+# ✅ SIGNUP
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.json
+    name = data.get("name")
+    email = data.get("email")
+    password = data.get("password")
+    print(f"New signup: {name}, {email}")
+    return jsonify({"message": "Signup successful!"}), 200
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+    print(f"Login attempt: {email}")
+    
+    # Simple check — replace with real DB logic
+    if email == "test@example.com" and password == "1234":
+        return jsonify({"message": "Login successful!"}), 200
+    else:
+        return jsonify({"error": "Invalid email or password"}), 401
+
+# ✅ Example protected route
+@app.route("/api/profile", methods=["GET"])
+def profile():
+    token = request.headers.get("Authorization")
+
+    if not token:
+        return jsonify({"error": "Missing token"}), 401
+
+    try:
+        decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+        return jsonify({"username": decoded["username"], "message": "Welcome back!"})
+    except jwt.ExpiredSignatureError:
+        return jsonify({"error": "Token expired"}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"error": "Invalid token"}), 401
+
 
 # --------------------------------------------------------
 # 1️⃣ Predefined skill URLs
