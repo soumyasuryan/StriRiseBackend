@@ -11,3 +11,6 @@ gunicorn
 requests
 duckduckgo-search
 xgboost
+flask-bcrypt
+flask-cors
+flask-sqlalchemy
