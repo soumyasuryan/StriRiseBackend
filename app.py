@@ -8,54 +8,133 @@ from urllib.parse import urljoin
 from flask_bcrypt import Bcrypt
 import jwt
 import datetime
+from werkzeug.security import generate_password_hash,check_password_hash
+from flask_sqlalchemy import SQLAlchemy
+from functools import wraps
+import os
 
 app = Flask(__name__)
 CORS(app)
 bcrypt = Bcrypt(app)
+session={}
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_secret')  # change this in production
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
-app.config['SECRET_KEY'] = 'supersecretkey123'  # change this in production
+# ✅ Init
+CORS(app, origins=["https://stri-rise.vercel.app"], supports_credentials=True)
+bcrypt = Bcrypt(app)
+db = SQLAlchemy(app)
 
-# In-memory user store (for demo)
-USERS = {}
+# ✅ User Model
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
 
-# ✅ SIGNUP
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+# ✅ Create DB tables
+with app.app_context():
+    db.create_all()
+# ✅ Decorator to protect routes using JWT
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth_header = request.headers.get('Authorization', None)
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return jsonify({"error": "Missing or invalid token header"}), 401
+
+        token = auth_header.split(" ")[1]  # safe because we checked format
+
+        try:
+            decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+            current_user = decoded.get("email")
+        except jwt.ExpiredSignatureError:
+            return jsonify({"error": "Token expired"}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({"error": "Invalid token"}), 401
+
+        # ✅ Pass current_user safely into route
+        return f(current_user, *args, **kwargs)
+
+    return decorated
+
+
+# ✅ Signup
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.json
-    name = data.get("name")
     email = data.get("email")
     password = data.get("password")
-    print(f"New signup: {name}, {email}")
-    return jsonify({"message": "Signup successful!"}), 200
 
+    if User.query.filter_by(email=email).first():
+        return jsonify({"error": "Email already exists"}), 400
+
+    user = User(email=email)
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+
+    # ✅ Generate JWT token on signup
+    token = jwt.encode(
+        {
+            "email": user.email,
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)
+        },
+        app.config['SECRET_KEY'],
+        algorithm="HS256"
+    )
+
+    return jsonify({
+        "message": "Signup successful!",
+        "token": token
+    }), 200
+
+
+# ✅ Login
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
     email = data.get("email")
     password = data.get("password")
+
     print(f"Login attempt: {email}")
-    
-    # Simple check — replace with real DB logic
-    if email == "test@example.com" and password == "1234":
-        return jsonify({"message": "Login successful!"}), 200
-    else:
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        print("❌ User not found")
+        return jsonify({"error": "User not found"}), 401
+
+    if not user.check_password(password):
+        print("❌ Wrong password")
         return jsonify({"error": "Invalid email or password"}), 401
 
+    token = jwt.encode(
+        {"email": user.email, "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)},
+        app.config['SECRET_KEY'],
+        algorithm="HS256"
+    )
+    print("✅ Login successful")
+    return jsonify({"message": "Login successful!", "token": token}), 200
+
 # ✅ Example protected route
+
 @app.route("/api/profile", methods=["GET"])
-def profile():
-    token = request.headers.get("Authorization")
+@token_required
+def profile(current_user):
+    user = User.query.filter_by(email=current_user).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
 
-    if not token:
-        return jsonify({"error": "Missing token"}), 401
-
-    try:
-        decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
-        return jsonify({"username": decoded["username"], "message": "Welcome back!"})
-    except jwt.ExpiredSignatureError:
-        return jsonify({"error": "Token expired"}), 401
-    except jwt.InvalidTokenError:
-        return jsonify({"error": "Invalid token"}), 401
+    return jsonify({
+        "email": user.email,
+        "message": f"Welcome back, {user.email}!"
+    }), 200
 
 
 # --------------------------------------------------------
@@ -174,6 +253,7 @@ def search_skill_online(skill):
 # 4️⃣ Combined API
 # --------------------------------------------------------
 @app.route("/api/get-skill", methods=["GET"])
+@token_required
 def get_skill_info():
     skill = request.args.get("skill", "").strip()
     if not skill:
@@ -198,13 +278,15 @@ def get_skill_info():
 # 5️⃣ Get all skills for home page
 # --------------------------------------------------------
 @app.route("/api/all-skills", methods=["GET"])
-def all_skills():
+@token_required
+def all_skills(current_user):
     results = {}
     for skill, url in SKILL_URLS.items():
         data = scrape_page(url)
-        if data:  # only include successful ones
+        if data:
             results[skill] = data
     return jsonify(results)
+
 
 
 # --------------------------------------------------------
@@ -248,7 +330,8 @@ import pandas as pd
 # 3️⃣ Prediction Route
 # --------------------------------------------------------
 @app.route("/predict", methods=["POST"])
-def predict():
+@token_required
+def predict(current_user):
     try:
         data = request.get_json()
 
@@ -317,4 +400,5 @@ def get_courses():
 # 4️⃣ Run the App
 # --------------------------------------------------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
+
