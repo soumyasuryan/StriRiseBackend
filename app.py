@@ -181,7 +181,7 @@ def scrape_page(url):
         summary = ""
         paragraphs = soup.find_all("p")
         if paragraphs:
-            summary = " ".join([p.get_text(strip=True) for p in paragraphs[:4]])
+            summary = " ".join([p.get_text(strip=True) for p in paragraphs[:15]])
         if not summary:
             meta = soup.find("meta", attrs={"name": "description"})
             if meta and meta.get("content"):
@@ -213,7 +213,7 @@ def scrape_page(url):
 
         return {
             "title": title,
-            "summary": summary[:600] if summary else "No summary found",
+            "summary": summary if summary else "No summary found",
             "url": url,
             "image": image_url or "No image found"
         }
