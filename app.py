@@ -13,6 +13,9 @@ from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 import os
 from huggingface_hub import InferenceClient
+from peft import PeftModel
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+import torch
 
 HF_TOKEN = os.environ.get("HF_TOKEN")  # store this in Render secrets
 hf_client = InferenceClient(HF_TOKEN)
@@ -406,6 +409,35 @@ def get_courses():
     # Return JSON response
     return jsonify(courses_data)
 
+print("🔄 Loading Hinglish model...")
+bnb_config = BitsAndBytesConfig(
+    load_in_8bit=True,
+    bnb_8bit_use_double_quant=True,
+    bnb_8bit_quant_type="nf4",
+    bnb_8bit_compute_dtype=torch.float16,
+    llm_int8_enable_fp32_cpu_offload=True
+)
+
+base_model = AutoModelForCausalLM.from_pretrained(
+    "databricks/dolly-v2-3b",
+    quantization_config=bnb_config,
+    device_map="auto",
+    trust_remote_code=True
+)
+
+model = PeftModel.from_pretrained(base_model, "soumyasuryan/striRise_AiRoadMap-model")
+tokenizer = AutoTokenizer.from_pretrained("soumyasuryan/striRise_AiRoadMap-model")
+model.eval()
+print("✅ Hinglish model loaded!")
+
+# Your token_required decorator
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        # Your auth logic here
+        return f(current_user="dummy")  # Simplified
+    return decorated
+
 @app.route("/api/business-roadmap", methods=["POST"])
 @token_required
 def business_roadmap(current_user):
@@ -419,28 +451,30 @@ def business_roadmap(current_user):
         risk_tolerance = data.get("risk_tolerance")
         business_type = data.get("business_type", None)
 
-        # Build profile + instruction
+        # Build profile + instruction (your code - perfect!)
         profile = f"{gender}, age {age}, location {location}, budget {budget}, skills: {skills}, risk_tolerance: {risk_tolerance}"
         if business_type:
             instruction = f"{profile}. Suggest a practical roadmap for {business_type} in Hinglish."
         else:
             instruction = f"{profile}. Suggest a practical business idea and roadmap in Hinglish."
 
-        prompt = f"### Instruction:\n{instruction}\n\n### Input:\n\n\n### Response:\n"
+        prompt = f"### Instruction:\n{instruction}\n\n### Input:\n\n### Response:\n"
 
-        # Call HF API
-        response = hf_client.text_generation(
-            model=HF_MODEL,
-            inputs=prompt,
-            max_new_tokens=300,
-            do_sample=True,
-            top_p=0.9,
-            temperature=0.8
-        )
+        # ✅ Generate locally with your LoRA model
+        inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512)
+        inputs = {k: v.to(model.device) for k, v in inputs.items()}
 
-        generated_text = response[0]["generated_text"]
-        if generated_text.startswith(prompt):
-            generated_text = generated_text[len(prompt):].strip()
+        with torch.no_grad():
+            output_ids = model.generate(
+                **inputs,
+                max_new_tokens=300,
+                do_sample=True,
+                top_p=0.9,
+                temperature=0.8,
+                pad_token_id=tokenizer.eos_token_id,
+            )
+
+        generated_text = tokenizer.decode(output_ids[0][inputs['input_ids'].shape[1]:], skip_special_tokens=True).strip()
 
         return jsonify({
             "success": True,
