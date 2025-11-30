@@ -12,6 +12,12 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 import os
+from huggingface_hub import InferenceClient
+
+HF_TOKEN = os.environ.get("HF_TOKEN")  # store this in Render secrets
+hf_client = InferenceClient(HF_TOKEN)
+HF_MODEL = "soumyasuryan/striRise_AiRoadMap-model"  # Replace with your model repo ID
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_secret')  # change this in production
@@ -399,6 +405,56 @@ def get_courses():
     
     # Return JSON response
     return jsonify(courses_data)
+
+@app.route("/api/business-roadmap", methods=["POST"])
+@token_required
+def business_roadmap(current_user):
+    try:
+        data = request.get_json()
+        gender = data.get("gender")
+        age = data.get("age")
+        location = data.get("location")
+        budget = data.get("budget")
+        skills = data.get("skills")
+        risk_tolerance = data.get("risk_tolerance")
+        business_type = data.get("business_type", None)
+
+        # Build profile + instruction
+        profile = f"{gender}, age {age}, location {location}, budget {budget}, skills: {skills}, risk_tolerance: {risk_tolerance}"
+        if business_type:
+            instruction = f"{profile}. Suggest a practical roadmap for {business_type} in Hinglish."
+        else:
+            instruction = f"{profile}. Suggest a practical business idea and roadmap in Hinglish."
+
+        prompt = f"### Instruction:\n{instruction}\n\n### Input:\n\n\n### Response:\n"
+
+        # Call HF API
+        response = hf_client.text_generation(
+            model=HF_MODEL,
+            inputs=prompt,
+            max_new_tokens=300,
+            do_sample=True,
+            top_p=0.9,
+            temperature=0.8
+        )
+
+        generated_text = response[0]["generated_text"]
+        if generated_text.startswith(prompt):
+            generated_text = generated_text[len(prompt):].strip()
+
+        return jsonify({
+            "success": True,
+            "profile": profile,
+            "instruction": instruction,
+            "roadmap": generated_text
+        })
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        })
+
 # --------------------------------------------------------
 # 4️⃣ Run the App
 # --------------------------------------------------------
