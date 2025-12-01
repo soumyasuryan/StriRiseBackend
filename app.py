@@ -334,56 +334,42 @@ def get_courses():
 # --------------------------------------------------------
 # Lightweight HF-backed Hinglish roadmap endpoint
 # --------------------------------------------------------
+hf_client = InferenceClient(model=HF_MODEL, token=HF_TOKEN)
+
 @app.route("/api/business-roadmap", methods=["POST"])
 @token_required
 def business_roadmap(current_user):
     try:
-        if hf_client is None:
-            return jsonify({"success": False, "error": "HF_TOKEN not configured"}), 500
+        data = request.get_json()
 
-        data = request.get_json() or {}
         gender = data.get("gender")
         age = data.get("age")
         location = data.get("location")
         budget = data.get("budget")
         skills = data.get("skills")
         risk_tolerance = data.get("risk_tolerance")
-        business_type = data.get("business_type", None)
+        business_type = data.get("business_type")
 
-        profile = f"{gender}, age {age}, location {location}, budget {budget}, skills: {skills}, risk_tolerance: {risk_tolerance}"
+        profile = f"{gender}, age {age}, location {location}, budget {budget}, skills: {skills}, risk tolerance: {risk_tolerance}"
+
         if business_type:
             instruction = f"{profile}. Suggest a practical roadmap for {business_type} in Hinglish."
         else:
             instruction = f"{profile}. Suggest a practical business idea and roadmap in Hinglish."
 
-        prompt = f"### Instruction:\n{instruction}\n\n### Input:\n\n### Response:\n"
-
-        # Call HF Inference API correctly
-        hf_response = hf_client.post(
-            json={
-                "inputs": prompt,
-                "parameters": {
-                    "max_new_tokens": 300,
-                    "temperature": 0.8,
-                    "top_p": 0.9
-                }
-            }
+        prompt = (
+            f"### Instruction:\n{instruction}\n\n"
+            f"### Input:\n\n"
+            f"### Response:\n"
         )
 
-        # hf_response may be dict or list; extract text robustly
-        generated_text = ""
-        if isinstance(hf_response, list) and len(hf_response) > 0:
-            # HF sometimes returns a list of dicts
-            first = hf_response[0]
-            if isinstance(first, dict):
-                generated_text = first.get("generated_text") or first.get("text") or ""
-        elif isinstance(hf_response, dict):
-            generated_text = hf_response.get("generated_text") or hf_response.get("text") or ""
-        else:
-            # fallback to string
-            generated_text = str(hf_response)
-
-        generated_text = (generated_text or "").strip()
+        # WORKING HF CALL 👇
+        generated_text = hf_client.text_generation(
+            prompt,
+            max_new_tokens=300,
+            temperature=0.8,
+            top_p=0.9,
+        )
 
         return jsonify({
             "success": True,
@@ -392,6 +378,7 @@ def business_roadmap(current_user):
             "roadmap": generated_text
         })
 
+    
     except Exception as e:
         print("❌ business_roadmap error:", e)
         return jsonify({"success": False, "error": str(e)}), 500
