@@ -334,8 +334,49 @@ def get_courses():
 # --------------------------------------------------------
 # Lightweight HF-backed Hinglish roadmap endpoint
 # --------------------------------------------------------
-hf_client = InferenceClient(model=HF_MODEL, token=HF_TOKEN)
+def sanitize_input(text):
+    banned_words = ["sex", "nude", "kill", "bomb", "drugs"]
+    for w in banned_words:
+        if w.lower() in text.lower():
+            return None
+    return text
 
+
+# -----------------------------
+# HF Chat Completion with Retry
+# -----------------------------
+def generate_roadmap(prompt, retries=3):
+    for attempt in range(retries):
+        try:
+            response = hf_client.chat_completion(
+                messages=[
+                    {"role": "system", "content": "You are a helpful AI who replies in Hinglish."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=350,
+                temperature=0.7,
+                top_p=0.9,
+                stream=False
+            )
+
+            # HF chat returns `choices`
+            if response and "choices" in response:
+                return response["choices"][0]["message"]["content"]
+
+            return "Unable to generate roadmap."
+
+        except Exception as e:
+            print(f"⚠️ HF attempt {attempt+1} failed → {e}")
+            time.sleep(1.2)
+
+    return None
+
+
+
+
+# -----------------------------
+# API Endpoint
+# -----------------------------
 @app.route("/api/business-roadmap", methods=["POST"])
 @token_required
 def business_roadmap(current_user):
@@ -352,37 +393,42 @@ def business_roadmap(current_user):
 
         profile = f"{gender}, age {age}, location {location}, budget {budget}, skills: {skills}, risk tolerance: {risk_tolerance}"
 
+        # Build instruction
         if business_type:
             instruction = f"{profile}. Suggest a practical roadmap for {business_type} in Hinglish."
         else:
             instruction = f"{profile}. Suggest a practical business idea and roadmap in Hinglish."
 
-        prompt = (
-            f"### Instruction:\n{instruction}\n\n"
-            f"### Input:\n\n"
-            f"### Response:\n"
-        )
+        # Safety Check
+        if sanitize_input(instruction) is None:
+            return jsonify({"success": False, "error": "Unsafe or invalid input"}), 400
 
-        # WORKING HF CALL 👇
-        generated_text = hf_client.text_generation(
-            prompt,
-            max_new_tokens=300,
-            temperature=0.8,
-            top_p=0.9,
-        )
+        # Generate Roadmap
+        roadmap_text = generate_roadmap(instruction)
+
+        if not roadmap_text:
+            return jsonify({"success": False, "error": "HF model failed after retries"}), 500
+
+        # Clean output (remove markdown artifacts)
+        roadmap_text = re.sub(r"[#*`_]+", "", roadmap_text)
 
         return jsonify({
             "success": True,
             "profile": profile,
             "instruction": instruction,
-            "roadmap": generated_text
+            "roadmap": roadmap_text
         })
 
-    
     except Exception as e:
         print("❌ business_roadmap error:", e)
         return jsonify({"success": False, "error": str(e)}), 500
 
+
+
+
+# -------------------------
+# Run the app
+# -------------------------
 # -------------------------
 # Run the app
 # -------------------------
