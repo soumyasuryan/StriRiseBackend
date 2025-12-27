@@ -47,6 +47,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 CORS(app, origins=["https://stri-rise.vercel.app", "http://localhost:3000"], supports_credentials=True)
 bcrypt = Bcrypt(app)
+
 db = SQLAlchemy(app)
 
 # -------------------------
@@ -62,9 +63,11 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+if os.environ.get("ENV") == "development":
+    with app.app_context():
+        db.create_all()
 
-with app.app_context():
-    db.create_all()
+
 
 def token_required(f):
     """Decorator: checks Authorization Bearer <token> and returns current_user email to handler."""
