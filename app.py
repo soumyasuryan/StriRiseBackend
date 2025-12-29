@@ -41,8 +41,12 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_secret')  # change in prod
 db_url = os.environ.get("DATABASE_URL")
 
+if db_url:
+    db_url = db_url.strip()  
+
 if db_url and db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
+
 
 app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
